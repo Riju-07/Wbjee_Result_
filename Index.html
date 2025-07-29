@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WBJEE Results</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="topbar-content">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCBZTXFyA9IDUipHRLYogbYMpUy-ExonPcAMInyhFfaivw0iJdC1_8BvgoVQHdXc86utw&usqp=CAU" alt="WBJEE Board" class="logo">
+        <span>West Bengal Joint Entrance Examination Board</span>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="content">
+        <h1>West Bengal Joint Entrance Examination Results 2025</h1>
+        <p>Please enter your details to view your result:</p>
+        <form class="verify-form" onsubmit="return validateForm(event)">
+          <div class="form-row">
+            <label for="appno">Application Number</label>
+            <input id="appno" name="appno" type="text" required maxlength="10" placeholder="Enter Application Number">
+          </div>
+
+          <div class="form-row">
+            <label for="dob">Date of Birth</label>
+            <input id="dob" name="dob" type="date" required>
+          </div>
+
+          <div class="form-row captcha-row">
+            <div>
+              <label for="pin">Security Pin</label>
+              <input id="pin" name="pin" type="text" required placeholder="Enter PIN">
+            </div>
+            <canvas id="captchaCanvas" width="120" height="40" class="captcha"></canvas>
+            <button type="button" class="refresh-btn" onclick="generateCaptcha()">Refresh</button>
+          </div>
+
+          <div class="buttons">
+            <button type="submit" class="submit-btn">View Result</button>
+            <button type="reset" class="reset-btn">Reset</button>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <footer class="bottom-bar">
+      <div>West Bengal Joint Entrance Examinations Board</div>
+    </footer>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="loader-overlay" id="loader">
+    <div class="spinner"></div>
+    <div class="loading-text">Fetching your result...</div>
+  </div>
+
+  <script>
+    let currentCaptcha = "";
+
+    function generateCaptcha() {
+      const canvas = document.getElementById("captchaCanvas");
+      const ctx = canvas.getContext("2d");
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      currentCaptcha = "";
+
+      for (let i = 0; i < 5; i++) {
+        currentCaptcha += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#f0f0f0";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = "22px Arial";
+      ctx.fillStyle = "#333";
+      ctx.fillText(currentCaptcha, 15, 28);
+    }
+
+    function validateForm(event) {
+      event.preventDefault();
+
+      const appno = document.getElementById("appno").value.trim();
+      const pin = document.getElementById("pin").value.trim().toUpperCase();
+
+      if (!/^\d+$/.test(appno)) {
+        alert("Application Number must contain digits only.");
+        return false;
+      }
+
+      if (pin !== currentCaptcha) {
+        alert("Security Pin does not match.");
+        generateCaptcha();
+        return false;
+      }
+
+      document.getElementById("loader").style.display = "flex";
+
+      setTimeout(() => {
+        window.location.href = "result.html";
+      }, 3000);
+    }
+
+    window.onload = generateCaptcha;
+  </script>
+</body>
+</html>
